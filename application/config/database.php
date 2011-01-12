@@ -7,7 +7,7 @@ return array
 		'type'       => 'mysql',
 		'connection' => array(
 			'hostname'   => 'dev01-lmst',
-			'database'   => 'kohana-openid',
+			'database'   => 'kohana-sso',
 			'username'   => 'dev',
 			'password'   => 'dev',
 			'persistent' => FALSE,

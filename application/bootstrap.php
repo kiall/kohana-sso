@@ -86,7 +86,7 @@ if (getenv('KOHANA_ENV') !== FALSE)
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-	'base_url'   => 'http://wk01-lmst.managedit.ie/kohana-openid/',
+	'base_url'   => 'http://wk01-lmst.managedit.ie/kohana-sso/',
 	'index_file' => '',
 ));
 

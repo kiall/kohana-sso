@@ -6,11 +6,11 @@
 		<title><?php echo $title ?> | Kohana SSO</title>
 
 		<!-- TODO .. fix -->
-		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-openid/guide/media/css/print.css" rel="stylesheet" media="print" />
-		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-openid/guide/media/css/screen.css" rel="stylesheet" media="screen" />
-		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-openid/guide/media/css/kodoc.css" rel="stylesheet" media="screen" />
-		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-openid/guide/media/css/shCore.css" rel="stylesheet" media="screen" />
-		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-openid/guide/media/css/shThemeKodoc.css" rel="stylesheet" media="screen" />
+		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-sso/guide/media/css/print.css" rel="stylesheet" media="print" />
+		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-sso/guide/media/css/screen.css" rel="stylesheet" media="screen" />
+		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-sso/guide/media/css/kodoc.css" rel="stylesheet" media="screen" />
+		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-sso/guide/media/css/shCore.css" rel="stylesheet" media="screen" />
+		<link type="text/css" href="http://wk01-lmst.managedit.ie/kohana-sso/guide/media/css/shThemeKodoc.css" rel="stylesheet" media="screen" />
 
 		<?php echo HTML::style('media/css/notices.css') ?>
 		<?php echo HTML::script('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js') ?>
@@ -30,7 +30,6 @@
 		<!--[if lt IE 9]>
 			<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
 		<![endif]-->
-
 
 		<?
 		if (isset($head) and is_array($head))
