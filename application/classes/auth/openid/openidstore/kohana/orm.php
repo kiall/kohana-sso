@@ -38,26 +38,30 @@ require_once 'Auth/OpenID/Nonce.php';
  */
 class Auth_OpenID_OpenIDStore_Kohana_ORM extends Auth_OpenID_OpenIDStore {
 
-	public function __construct()
-	{
-
-	}
-
 	/**
 	 * Store an association in the association directory.
 	 */
 	public function storeAssociation($server_url, $association)
 	{
-		$association = ORM::factory('openid_association');
-		
-		$association->server_url = $server_url;
-		$association->handle = $association->handle;
-		$association->secret = $association->secret;
-		$association->issued = $association->issued;
-		$association->lifetime = $association->lifetime;
-		$association->assoc_type = $association->assoc_type;
 
-		$association->save();
+		try {
+			$assoc = ORM::factory('openid_association');
+
+			$assoc->server_url = $server_url;
+			$assoc->handle = $association->handle;
+			$assoc->secret = $association->secret;
+			$assoc->issued = $association->issued;
+			$assoc->lifetime = $association->lifetime;
+			$assoc->assoc_type = $association->assoc_type;
+
+			$assoc->save();
+
+			echo $assoc->id;
+		}
+		catch (Exception $e)
+		{
+			echo "ERROR"; die();
+		}
 	}
 
 	/**
@@ -69,10 +73,25 @@ class Auth_OpenID_OpenIDStore_Kohana_ORM extends Auth_OpenID_OpenIDStore {
 	{
 		if ($handle === NULL)
 		{
-			$association = ORM::factory('openid_association')
+			$associations = ORM::factory('openid_association')
 				->where('server_url', '=', $server_url)
 				->order_by('id', 'DESC')
 				->find_all();
+
+			$result = array();
+
+			foreach ($associations as $association)
+			{
+				 $assoc = new Auth_OpenID_Association($association->handle,
+					 $association->secret,
+					 $association->issued,
+					 $association->lifetime,
+					 $association->assoc_type);
+
+				 $result[] = $assoc;
+			}
+
+			return $result;
 		}
 		else
 		{
@@ -82,13 +101,18 @@ class Auth_OpenID_OpenIDStore_Kohana_ORM extends Auth_OpenID_OpenIDStore {
 				->order_by('id', 'DESC')
 				->find();
 
-
-			$associations = array();
-
-			if ($association->loaded())
+			if ( ! $association->loaded())
 			{
-				$associations[] = $association;
+				return NULL;
 			}
+
+			$association = new Auth_OpenID_Association($association->handle,
+				 $association->secret,
+				 $association->issued,
+				 $association->lifetime,
+				 $association->assoc_type);
+
+			return $association;
 		}
 	}
 
@@ -161,7 +185,7 @@ class Auth_OpenID_OpenIDStore_Kohana_ORM extends Auth_OpenID_OpenIDStore {
 	public function cleanupAssociations()
 	{
 		$associations = ORM::factory('openid_association')
-			->where(DB::expr('issued + lifetime'), '<', time())
+			->where(DB::expr('issued + lifetime'), '>', time())
 			->find_all();
 
 		foreach ($associations as $association)
@@ -177,7 +201,7 @@ class Auth_OpenID_OpenIDStore_Kohana_ORM extends Auth_OpenID_OpenIDStore {
 		global $Auth_OpenID_SKEW;
 
 		$nonces = ORM::factory('openid_nonce')
-			->where('timestamp', '<', time() - $Auth_OpenID_SKEW)
+			->where('timestamp', '>', time() + $Auth_OpenID_SKEW)
 			->find_all();
 
 		foreach ($nonces as $nonce)

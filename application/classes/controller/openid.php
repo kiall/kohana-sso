@@ -13,8 +13,8 @@ class Controller_OpenID extends Controller_Template {
 	{
 		parent::before();
 
-//		$this->store = new Auth_OpenID_OpenIDStore_Kohana_ORM();
-		$this->store = new Auth_OpenID_FileStore('/tmp/openid5/');
+		$this->store = new Auth_OpenID_OpenIDStore_Kohana_ORM();
+//		$this->store = new Auth_OpenID_FileStore('/tmp/openid5/');
 		$this->server = new Auth_OpenID_Server($this->store, Route::url('openid'));
 	}
 
@@ -99,12 +99,13 @@ class Controller_OpenID extends Controller_Template {
 
 	public function action_trust()
 	{
-		$trusted = isset($_POST['trust']);
+		$trusted = (isset($_POST['trust']) OR isset($_POST['trust_always']));
+		$remember = isset($_POST['trust_always']);
 
 		$this->do_trust($trusted);
 	}
 
-	protected function do_trust($trusted, $remember = FALSE)
+	protected function do_trust($trusted)
 	{
 		$request = unserialize(Session::instance()->get('request'));
 
