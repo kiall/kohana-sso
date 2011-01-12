@@ -4,7 +4,7 @@ require_once "Auth/OpenID.php";
 require_once "Auth/OpenID/Server.php";
 require_once "Auth/OpenID/SReg.php";
 
-class Controller_OpenID extends Controller {
+class Controller_OpenID extends Controller_Template {
 
 	protected $store;
 	protected $server;
@@ -31,8 +31,9 @@ class Controller_OpenID extends Controller {
 			if ( ! $request)
 			{
 				// Maybe force a login here?
-				$this->response->body(View::factory('openid/about'));
-				return;
+				$this->template->title = 'OpenID';
+				$this->template->breadcrumb = array('OpenID', 'About');
+				$this->template->body = View::factory('openid/about');
 			}
 
 			$request = unserialize($request);
@@ -42,23 +43,9 @@ class Controller_OpenID extends Controller {
 
 		if (in_array($request->mode, array('checkid_immediate', 'checkid_setup')))
 		{
-			if ($request->idSelect())
-			{
-				// Perform IDP-driven identifier selection
-				if ($request->mode == 'checkid_immediate')
-				{
-					$response = $request->answer(FALSE);
-				}
-				else
-				{
-					$this->response->body(View::factory('openid/trust', array(
-						'request' => $request,
-					)));
-
-					return;
-				}
-			}
-			else if ($request->immediate)
+			$relying_party = parse_url($request->trust_root, PHP_URL_HOST);
+			
+			if ($request->immediate)
 			{
 				$response = $request->answer(FALSE, Route::url('openid'));
 			}
@@ -69,12 +56,22 @@ class Controller_OpenID extends Controller {
 					Session::instance()->set('return_url', $this->request->url());
 					$this->request->redirect(Route::url('account', array('action' => 'login')));
 				}
+				
+				if (in_array($relying_party, Kohana::config('openid.whitelist')))
+				{
+					$this->do_trust(TRUE);
+				}
+				else if(in_array($relying_party, Kohana::config('openid.blacklist')))
+				{
+					$this->do_trust(FALSE);
+				}
 
-
-
-				$this->response->body(View::factory('openid/trust', array(
+				$this->template->title = 'Trust';
+				$this->template->breadcrumb = array('OpenID', 'Trust');
+				$this->template->body = View::factory('openid/trust', array(
 					'request' => $request,
-				)));
+					'relying_party' => $relying_party,
+				));
 
 				return;
 			}
@@ -96,14 +93,20 @@ class Controller_OpenID extends Controller {
 			$this->response->headers($k, $v);
 		}
 
+		$this->auto_render = FALSE;
 		$this->response->body($webresponse->body);
 	}
 
 	public function action_trust()
 	{
-		$request = unserialize(Session::instance()->get('request'));
-
 		$trusted = isset($_POST['trust']);
+
+		$this->do_trust($trusted);
+	}
+
+	protected function do_trust($trusted, $remember = FALSE)
+	{
+		$request = unserialize(Session::instance()->get('request'));
 
 		$fail_cancels = TRUE;
 
@@ -121,38 +124,15 @@ class Controller_OpenID extends Controller {
 			$user = Auth::instance()->get_user();
 		}
 
-		$idpSelect = '';
-
-		if ($request->idSelect())
-		{
-			if ($idpSelect)
-			{
-				$req_url = Route::url('account', array('action' => 'profile', 'username' => @$_POST['idSelect']));
-			}
-			else
-			{
-				$trusted = FALSE;
-			}
-		}
-		else
-		{
-			$req_url = $request->identity;
-		}
-
-		$req_url = Route::url('account', array('action' => 'profile', 'username' => $user->username));
-
 		Session::instance()->set('request', serialize($request));
-
-		if ( ! $request->idSelect() && ($req_url != Route::url('account', array('action' => 'profile', 'username' => $user->username))))
-		{
-			$this->request->redirect(Route::url('account', array('action' => 'login')));
-		}
 
 		$trust_root = $request->trust_root;
 
 		if ($trusted)
 		{
 			Session::instance()->set('request', NULL);
+
+			$req_url = Route::url('account', array('action' => 'profile', 'username' => $user->username));
 
 			$response = $request->answer(TRUE, NULL, $req_url);
 
@@ -183,7 +163,6 @@ class Controller_OpenID extends Controller {
 			}
 
 			$this->auto_render = FALSE;
-
 			$this->response->body($webresponse->body);
 		}
 		elseif ($fail_cancels)
@@ -202,10 +181,9 @@ class Controller_OpenID extends Controller {
 
 	public function action_idpXrds()
 	{
-		$this->auto_render = FALSE;
-
 		$this->response->headers('Content-type', 'application/xrds+xml');
 
+		$this->auto_render = FALSE;
 		$this->response->body('<?xml version="1.0" encoding="UTF-8"?>
 <xrds:XRDS
 xmlns:xrds="xri://$xrds"
@@ -221,10 +199,9 @@ xmlns="xri://$xrd*($v*2.0)">
 
 	public function action_userXrds()
 	{
-		$this->auto_render = FALSE;
-
 		$this->response->headers('Content-type', 'application/xrds+xml');
 
+		$this->auto_render = FALSE;
 		$this->response->body('<?xml version="1.0" encoding="UTF-8"?>
 <xrds:XRDS
 xmlns:xrds="xri://$xrds"

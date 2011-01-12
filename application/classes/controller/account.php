@@ -1,20 +1,7 @@
 <?php
 
 class Controller_Account extends Controller_Template {
-	public function before()
-	{
-		parent::before();
 
-//		if ( ! Auth::instance()->logged_in() AND $this->request->action() != 'login' AND $this->request->action() != 'profile')
-//		{
-//			Session::instance()->set('return_url', $this->request->url());
-//
-//			$this->request->redirect(Route::url('account', array(
-//				'action' => 'login',
-//			)));
-//		}
-	}
-	
 	public function action_index()
 	{
 		$this->request->redirect(Route::url('account', array(
