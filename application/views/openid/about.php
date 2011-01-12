@@ -1,0 +1,1 @@
+This is not an openid request.. Render some other page..

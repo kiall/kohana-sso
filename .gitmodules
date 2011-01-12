@@ -1,0 +1,21 @@
+[submodule "system"]
+	path = system
+	url = http://github.com/kohana/core.git
+[submodule "modules/orm"]
+	path = modules/orm
+	url = http://github.com/kohana/orm.git
+[submodule "modules/database"]
+	path = modules/database
+	url = http://github.com/kohana/database.git
+[submodule "application/vendor/php-openid"]
+	path = application/vendor/php-openid
+	url = https://github.com/openid/php-openid.git
+[submodule "modules/auth"]
+	path = modules/auth
+	url = http://github.com/kohana/auth.git
+[submodule "modules/notices"]
+	path = modules/notices
+	url = http://github.com/kiall/kohana-notices.git
+[submodule "modules/userguide"]
+	path = modules/userguide
+	url = http://github.com/kohana/userguide.git
