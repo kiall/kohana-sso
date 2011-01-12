@@ -9,6 +9,18 @@ class Controller_Account extends Controller_Template {
 		)));
 	}
 
+	public function action_register()
+	{
+		if ($this->request->method() == 'POST')
+		{
+
+		}
+
+		$this->template->title = 'Register';
+
+		$this->template->body = View::factory('account/register');
+	}
+	
 	public function action_login()
 	{
 		if ($this->request->method() == 'POST')
@@ -38,7 +50,6 @@ class Controller_Account extends Controller_Template {
 		}
 
 		$this->template->title = 'Login';
-		$this->template->breadcrumb = array('Account', 'Login');
 		
 		$this->template->body = View::factory('account/login');
 	}
@@ -68,15 +79,11 @@ class Controller_Account extends Controller_Template {
 
 
 		$this->template->title = $user->username.'\'s Profile';
-		$this->template->breadcrumb = array('Account', 'Profile');
-		$this->template->menu = View::factory('menu');
-
+		
 		$this->template->head = array();
 		$this->template->head[] = '<link rel="openid2.provider openid.server" href="'.Route::url('openid').'"/>';
 		$this->template->head[] = '<meta http-equiv="X-XRDS-Location" content="'.Route::url('openid', array('action' => 'userXrds', 'username' => $user->username)).'" />';
 		
-		$this->template->body = View::factory('account/profile', array(
-			'user' => $user,
-		));
+		$this->template->body = View::factory('account/profile');
 	}
 }

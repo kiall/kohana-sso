@@ -49,9 +49,21 @@
 				</a>
 				<div id="menu">
 					<ul>
-						<li class="login first">
-							<a href="<?php echo Route::url('account', array('action' => ($user ? 'logout' : 'login'))) ?>"><?php echo __(($user ? 'Logout' : 'Login')) ?></a>
-						</li>
+						<? if ($user): ?>
+							<li class="login first">
+								<a href="<?php echo Route::url('account', array('action' => ($user ? 'logout' : 'login'))) ?>"><?php echo __(($user ? 'Logout' : 'Login')) ?></a>
+							</li>
+							<li class="changepw">
+								<a href="<?php echo Route::url('account', array('action' => 'changepw')) ?>"><?php echo __('Change Password') ?></a>
+							</li>
+							<li class="profile last">
+								<a href="<?php echo Route::url('account', array('action' => 'profile', 'username' => $user->username)) ?>"><?php echo __('Profile') ?></a>
+							</li>
+						<? else: ?>
+							<li class="login first last">
+								<a href="<?php echo Route::url('account', array('action' => 'login')) ?>"><?php echo __('Login') ?></a>
+							</li
+						<? endif; ?>
 					</ul>
 				</div>
 			</div>
@@ -60,25 +72,9 @@
 			<div class="wrapper">
 				<div class="container">
 					<div class="span-22 prefix-1 suffix-1">
-						<ul id="breadcrumb">
-							<?php foreach ($breadcrumb as $link => $title): ?>
-								<?php if (is_string($link)): ?>
-									<li><?php echo HTML::anchor($link, $title) ?></li>
-								<?php else: ?>
-									<li class="last"><?php echo $title ?></li>
-								<?php endif ?>
-							<?php endforeach ?>
-						</ul>
-					</div>
-					<div class="span-22 prefix-1 suffix-1">
 						<?=Notices::display() ?>
 					</div>
-					<div class="span-6 prefix-1">
-						<div id="topics">
-							<?php echo $menu ?>
-						</div>
-					</div>
-					<div id="body" class="span-16 suffix-1 last">
+					<div class="span-22 prefix-1 suffix-1">
 						<?php echo $body ?>
 					</div>
 				</div>

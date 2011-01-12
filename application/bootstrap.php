@@ -22,7 +22,7 @@ else
  * @see  http://kohanaframework.org/guide/using.configuration
  * @see  http://php.net/timezones
  */
-date_default_timezone_set('Etc/UTC');
+date_default_timezone_set('Europe/Dublin');
 
 /**
  * Set the default locale.

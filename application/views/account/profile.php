@@ -1,7 +1,5 @@
-<h1><?=$user->username ?>'s Profile</h1>
+<h2>Where to?</h2>
 <ul>
-	<li>Username: <?=$user->username ?></li>
-	<li>Country: <?=$user->country ?></li>
-	<li>Language: <?=$user->language ?></li>
-	<li>Country: <?=$user->timezone ?></li>
+	<a href="http://dev.kohanaframework.org/">Kohana Development</a>
+	<a href="http://dev.kohanaframework.org/">Kohana Forums</a>
 </ul>

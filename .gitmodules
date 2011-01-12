@@ -7,9 +7,6 @@
 [submodule "modules/database"]
 	path = modules/database
 	url = http://github.com/kohana/database.git
-[submodule "application/vendor/php-openid"]
-	path = application/vendor/php-openid
-	url = https://github.com/kiall/php-openid.git
 [submodule "modules/auth"]
 	path = modules/auth
 	url = http://github.com/kohana/auth.git

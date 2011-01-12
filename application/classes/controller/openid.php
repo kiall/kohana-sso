@@ -13,8 +13,8 @@ class Controller_OpenID extends Controller_Template {
 	{
 		parent::before();
 
-		$this->store = new Auth_OpenID_OpenIDStore_Kohana_ORM();
-//		$this->store = new Auth_OpenID_FileStore('/tmp/openid5/');
+//		$this->store = new Auth_OpenID_FileStore('/tmp/openid6/');
+		$this->store = new Auth_OpenID_MemcachedStore(memcache_connect('localhost', 11211));
 		$this->server = new Auth_OpenID_Server($this->store, Route::url('openid'));
 	}
 

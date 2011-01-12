@@ -2,7 +2,7 @@
 
 return array(
 	'whitelist'    => array(
-//		'wk01-lmst.managedit.ie',
+		'labs.managedit.ie',
 	),
 	'blacklist'    => array(
 		
