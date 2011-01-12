@@ -118,7 +118,7 @@ class Controller_OpenID extends Controller {
 
 		if (Auth::instance()->logged_in())
 		{
-			$user = Auth::instance()->get_user()->username;
+			$user = Auth::instance()->get_user();
 		}
 
 		$idpSelect = '';
@@ -131,7 +131,7 @@ class Controller_OpenID extends Controller {
 			}
 			else
 			{
-				$trusted = false;
+				$trusted = FALSE;
 			}
 		}
 		else
@@ -139,11 +139,11 @@ class Controller_OpenID extends Controller {
 			$req_url = $request->identity;
 		}
 
-		$req_url = Route::url('account', array('action' => 'profile', 'username' => $user));
+		$req_url = Route::url('account', array('action' => 'profile', 'username' => $user->username));
 
 		Session::instance()->set('request', serialize($request));
 
-		if ( ! $request->idSelect() && ($req_url != Route::url('account', array('action' => 'profile', 'username' => $user))))
+		if ( ! $request->idSelect() && ($req_url != Route::url('account', array('action' => 'profile', 'username' => $user->username))))
 		{
 			$this->request->redirect(Route::url('account', array('action' => 'login')));
 		}
@@ -154,7 +154,25 @@ class Controller_OpenID extends Controller {
 		{
 			Session::instance()->set('request', NULL);
 
-			$response = $request->answer(true, null, $req_url);
+			$response = $request->answer(TRUE, NULL, $req_url);
+
+			$sreg_data = array(
+			   'fullname' => $user->first_name.' '.$user->last_name,
+			   'nickname' => $user->username,
+			   'email'    => $user->email,
+			   'gender'   => $user->gender,
+			   'country'  => $user->country,
+			   'language' => $user->language,
+			   'timezone' => $user->timezone,
+			);
+
+			// Add the simple registration response values to the OpenID
+			// response message.
+			$sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($request);
+
+			$sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
+
+			$sreg_response->toMessage($response->fields);
 
 			// Generate a response to send to the user agent.
 			$webresponse = $this->server->encodeResponse($response);

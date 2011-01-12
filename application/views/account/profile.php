@@ -1,2 +1,7 @@
-<h1>Profile</h1>
-<p><?=$user->username ?>'s Profile</p>
+<h1><?=$user->username ?>'s Profile</h1>
+<ul>
+	<li>Username: <?=$user->username ?></li>
+	<li>Country: <?=$user->country ?></li>
+	<li>Language: <?=$user->language ?></li>
+	<li>Country: <?=$user->timezone ?></li>
+</ul>

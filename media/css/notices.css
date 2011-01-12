@@ -25,34 +25,34 @@ div.notice {
 /*  BACKGROUND IMAGES  */
 /***********************/
 div.error div.notice-content {
-	background: url(../images/notices/error.png) no-repeat;
+	background: url(../img/notices/error.png) no-repeat;
 }
 div.info div.notice-content {
-	background: url(../images/notices/info.png) no-repeat;
+	background: url(../img/notices/info.png) no-repeat;
 }
 div.tip div.notice-content {
-	background: url(../images/notices/tip.png) no-repeat;
+	background: url(../img/notices/tip.png) no-repeat;
 }
 div.denied div.notice-content {
-	background: url(../images/notices/denied.png) no-repeat;
+	background: url(../img/notices/denied.png) no-repeat;
 }
 div.event div.notice-content {
-	background: url(../images/notices/event.png) no-repeat;
+	background: url(../img/notices/event.png) no-repeat;
 }
 div.help div.notice-content {
-	background: url(../images/notices/help.png) no-repeat;
+	background: url(../img/notices/help.png) no-repeat;
 }
 div.message div.notice-content {
-	background: url(../images/notices/message.png) no-repeat;
+	background: url(../img/notices/message.png) no-repeat;
 }
 div.success div.notice-content {
-	background: url(../images/notices/success.png) no-repeat;
+	background: url(../img/notices/success.png) no-repeat;
 }
 div.warning div.notice-content {
-	background: url(../images/notices/warning.png) no-repeat;
+	background: url(../img/notices/warning.png) no-repeat;
 }
 div.wizard div.notice-content {
-	background: url(../images/notices/wizard.png) no-repeat;
+	background: url(../img/notices/wizard.png) no-repeat;
 }
 div.notice div.notice-close {
 	height: 16px; width: 16px;
@@ -60,7 +60,7 @@ div.notice div.notice-close {
 	overflow: hidden;
 }
 div.notice div.notice-close a {
-	background: url(../images/notices/notice-close.png) no-repeat;
+	background: url(../img/notices/notice-close.png) no-repeat;
 	/* Shove the text below the div */
 	padding-left: 20px;
 }
