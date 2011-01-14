@@ -50,19 +50,22 @@
 				<div id="menu">
 					<ul>
 						<? if ($user): ?>
-							<li class="login first">
-								<a href="<?php echo Route::url('account', array('action' => ($user ? 'logout' : 'login'))) ?>"><?php echo __(($user ? 'Logout' : 'Login')) ?></a>
+							<li class="logout first">
+								
 							</li>
 							<li class="changepw">
-								<a href="<?php echo Route::url('account', array('action' => 'changepw')) ?>"><?php echo __('Change Password') ?></a>
-							</li>
-							<li class="profile last">
 								<a href="<?php echo Route::url('account', array('action' => 'profile', 'username' => $user->username)) ?>"><?php echo __('Profile') ?></a>
 							</li>
+							<li class="profile last">
+								<a href="<?php echo Route::url('account', array('action' => 'logout')) ?>"><?php echo __('Logout') ?></a>
+							</li>
 						<? else: ?>
-							<li class="login first last">
+							<li class="register first">
+								<a href="<?php echo Route::url('account', array('action' => 'register')) ?>"><?php echo __('Register') ?></a>
+							</li>
+							<li class="login last">
 								<a href="<?php echo Route::url('account', array('action' => 'login')) ?>"><?php echo __('Login') ?></a>
-							</li
+							</li>
 						<? endif; ?>
 					</ul>
 				</div>
@@ -71,6 +74,9 @@
 		<div id="content">
 			<div class="wrapper">
 				<div class="container">
+					<div class="span-22 prefix-1 suffix-1">
+						<h1>Kohana SSO</h1>
+					</div>
 					<div class="span-22 prefix-1 suffix-1">
 						<?=Notices::display() ?>
 					</div>

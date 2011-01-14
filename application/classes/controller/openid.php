@@ -15,12 +15,12 @@ class Controller_OpenID extends Controller_Template {
 
 //		$this->store = new Auth_OpenID_FileStore('/tmp/openid6/');
 		$this->store = new Auth_OpenID_MemcachedStore(memcache_connect('localhost', 11211));
-		$this->server = new Auth_OpenID_Server($this->store, Route::url('openid'));
+		$this->server = new Auth_OpenID_Server($this->store, Route::url('openid', NULL, $this->request->protocol()));
 	}
 
 	public function action_index()
 	{
-		$this->response->headers('X-XRDS-Location', Route::url('openid', array('action' => 'idpXrds')));
+		$this->response->headers('X-XRDS-Location', Route::url('openid', array('action' => 'idpXrds'), $this->request->protocol()));
 
 		$request = $this->server->decodeRequest();
 
@@ -47,14 +47,14 @@ class Controller_OpenID extends Controller_Template {
 			
 			if ($request->immediate)
 			{
-				$response = $request->answer(FALSE, Route::url('openid'));
+				$response = $request->answer(FALSE, Route::url('openid', NULL, $this->request->protocol()));
 			}
 			else
 			{
 				if (!Auth::instance()->logged_in())
 				{
 					Session::instance()->set('return_url', $this->request->url());
-					$this->request->redirect(Route::url('account', array('action' => 'login')));
+					$this->request->redirect(Route::url('account', array('action' => 'login'), $this->request->protocol()));
 				}
 				
 				if (in_array($relying_party, Kohana::config('openid.whitelist')))
@@ -133,7 +133,7 @@ class Controller_OpenID extends Controller_Template {
 		{
 			Session::instance()->set('request', NULL);
 
-			$req_url = Route::url('account', array('action' => 'profile', 'username' => $user->username));
+			$req_url = Route::url('account', array('action' => 'profile', 'username' => $user->username), $this->request->protocol());
 
 			$response = $request->answer(TRUE, NULL, $req_url);
 
@@ -192,7 +192,7 @@ xmlns="xri://$xrd*($v*2.0)">
 <XRD>
 <Service priority="0">
 <Type>'.Auth_OpenID_TYPE_2_0_IDP.'</Type>
-<URI>'.Route::url('openid').'</URI>
+<URI>'.Route::url('openid', NULL, $this->request->protocol()).'</URI>
 </Service>
 </XRD>
 </xrds:XRDS>');
@@ -211,10 +211,9 @@ xmlns="xri://$xrd*($v*2.0)">
 <Service priority="0">
 <Type>'.Auth_OpenID_TYPE_2_0.'</Type>
 <Type>'.Auth_OpenID_TYPE_1_1.'</Type>
-<URI>'.Route::url('openid').'</URI>
+<URI>'.Route::url('openid', NULL, $this->request->protocol()).'</URI>
 </Service>
 </XRD>
 </xrds:XRDS>');
 	}
-
 }

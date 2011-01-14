@@ -1,24 +1,37 @@
 <?php
 
 class Controller_Account extends Controller_Template {
-
-	public function action_index()
-	{
-		$this->request->redirect(Route::url('account', array(
-			'action' => 'login',
-		)));
-	}
-
 	public function action_register()
 	{
+		$this->template->title = 'Register';
+		$this->template->body = View::factory('account/register');
+		$this->template->body->errors = array();
+		
+		$user = ORM::factory('user');
+
 		if ($this->request->method() == 'POST')
 		{
-
+			try
+			{
+				$user->values(arr::extract($_POST['user'], array(
+						'username',
+						'email',
+						'password',
+						'first_name',
+						'last_name',
+						'gender',
+						'country',
+						'language',
+						'timezone',
+					)))->save();
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				$this->template->body->errors = $e->errors('account/register');
+			}
 		}
 
-		$this->template->title = 'Register';
-
-		$this->template->body = View::factory('account/register');
+		$this->template->body->user = $user;
 	}
 	
 	public function action_login()
@@ -37,10 +50,9 @@ class Controller_Account extends Controller_Template {
 				}
 				else
 				{
-					$this->request->redirect(Route::url('account', array(
-						'action' => 'profile',
+					$this->request->redirect(Route::url('profile', array(
 						'username' => Auth::instance()->get_user()->username,
-					)));
+					), $this->request->protocol()));
 				}
 			}
 			else
@@ -62,7 +74,7 @@ class Controller_Account extends Controller_Template {
 
 		$this->request->redirect(Route::url('account', array(
 			'action' => 'login',
-		)));
+		), $this->request->protocol()));
 	}
 
 	public function action_profile()
@@ -81,8 +93,8 @@ class Controller_Account extends Controller_Template {
 		$this->template->title = $user->username.'\'s Profile';
 		
 		$this->template->head = array();
-		$this->template->head[] = '<link rel="openid2.provider openid.server" href="'.Route::url('openid').'"/>';
-		$this->template->head[] = '<meta http-equiv="X-XRDS-Location" content="'.Route::url('openid', array('action' => 'userXrds', 'username' => $user->username)).'" />';
+		$this->template->head[] = '<link rel="openid2.provider openid.server" href="'.Route::url('openid', NULL, $this->request->protocol()).'"/>';
+		$this->template->head[] = '<meta http-equiv="X-XRDS-Location" content="'.Route::url('openid', array('action' => 'userXrds', 'username' => $user->username), $this->request->protocol()).'" />';
 		
 		$this->template->body = View::factory('account/profile');
 	}

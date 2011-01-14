@@ -85,8 +85,9 @@ if (getenv('KOHANA_ENV') !== FALSE)
  * - boolean  profile     enable or disable internal profiling               TRUE
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
+
 Kohana::init(array(
-	'base_url'   => 'http://wk01-lmst.managedit.ie/kohana-sso/',
+	'base_url'   => '/kohana-sso/',
 	'index_file' => '',
 ));
 
@@ -123,20 +124,28 @@ Kohana::modules(array(
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
  * defaults for the URI.
  */
-Route::set('account', 'account/<action>(/<username>)')
-	->defaults(array(
-		'controller' => 'account',
-		'action'     => 'index',
-	));
-
 Route::set('openid', 'openid/<action>(/<username>)')
 	->defaults(array(
 		'controller' => 'openid',
 		'action'     => 'index',
 	));
 
-Route::set('default', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
-		'controller' => 'welcome',
-		'action'     => 'index',
+Route::set('account', '<action>', array(
+		'action' => '(login|logout|register)',
+	))->defaults(array(
+		'controller' => 'account',
+		'action'     => 'login',
+	));
+
+Route::set('profile', '<username>', array(
+		'username' => '[a-zA-Z0-9_\-]+'
+	))->defaults(array(
+		'controller' => 'account',
+		'action'     => 'profile',
+	));
+
+Route::set('default', '', array(
+	))->defaults(array(
+		'controller' => 'account',
+		'action'     => 'login',
 	));
