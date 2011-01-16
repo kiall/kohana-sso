@@ -78,18 +78,17 @@ class Controller_Account extends Controller_Template {
 
 	public function action_profile()
 	{
-		$user = $this->request->param('username', FALSE);
+		$profile_user = $this->request->param('username', FALSE);
 
-		if ( ! $user)
+		if ( ! $profile_user)
 			throw new Http_Exception_404 ();
 
-		$user = ORM::factory('user')->where('username', '=', $user)->find();
+		$profile_user = ORM::factory('user')->where('username', '=', $profile_user)->find();
 
-		if ( ! $user->loaded())
+		if ( ! $profile_user->loaded())
 			throw new Http_Exception_404 ();
 
-
-		$this->template->title = $user->username.'\'s Profile';
+		$this->template->title = $profile_user->username.'\'s Profile';
 		$this->template->body = View::factory('account/profile');
 		$this->template->body->errors = array();
 
@@ -97,7 +96,7 @@ class Controller_Account extends Controller_Template {
 		{
 			try
 			{
-				$user->update_user($_POST['user'], array(
+				$profile_user->update_user($_POST['user'], array(
 					'email',
 					'password',
 					'first_name',
@@ -114,7 +113,10 @@ class Controller_Account extends Controller_Template {
 			}
 		}
 
-		$this->template->body->user = $user;
+		$this->template->body->profile_user = $profile_user;
+		$this->template->head = array();
+		$this->template->head[] = '<link rel="openid2.provider openid.server" href="'.Route::url('openid', NULL, $this->request->protocol()).'"/>';
+		$this->template->head[] = '<meta http-equiv="X-XRDS-Location" content="'.Route::url('openid', array('action' => 'userXrds', 'username' => $profile_user->username), $this->request->protocol()).'" />';
 	}
 
 	protected function _redirect($to)
@@ -129,8 +131,8 @@ class Controller_Account extends Controller_Template {
 		{
 			switch ($to)
 			{
-				case 'profile':
 				default:
+				case 'profile':
 					$this->request->redirect(Route::url('profile', array(
 						'username' => Auth::instance()->get_user()->username,
 					), $this->request->protocol()));

@@ -13,7 +13,7 @@ class Controller_OpenID extends Controller_Template {
 	{
 		parent::before();
 
-//		$this->store = new Auth_OpenID_FileStore('/tmp/openid6/');
+//		$this->store = new Auth_OpenID_FileStore(sys_get_temp_dir().'/kohana-sso/');
 		$this->store = new Auth_OpenID_MemcachedStore(memcache_connect('localhost', 11211));
 		$this->server = new Auth_OpenID_Server($this->store, Route::url('openid', NULL, $this->request->protocol()));
 	}
@@ -51,7 +51,7 @@ class Controller_OpenID extends Controller_Template {
 			}
 			else
 			{
-				if (!Auth::instance()->logged_in())
+				if ( ! Auth::instance()->logged_in())
 				{
 					Session::instance()->set('return_url', $this->request->url());
 					$this->request->redirect(Route::url('account', array('action' => 'login'), $this->request->protocol()));

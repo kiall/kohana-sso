@@ -473,7 +473,6 @@ return array(
 	'uga' => 'Ugaritic',
 	'uk' => 'Ukrainian',
 	'umb' => 'Umbundu',
-	'und' => 'Unknown or Invalid Language',
 	'ur' => 'Urdu',
 	'uz' => 'Uzbek',
 	'vai' => 'Vai',
@@ -505,6 +504,5 @@ return array(
 	'znd' => 'Zande',
 	'zu' => 'Zulu',
 	'zun' => 'Zuni',
-	'zxx' => 'No linguistic content',
 	'zza' => 'Zaza',
 );
