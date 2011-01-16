@@ -13,27 +13,39 @@ class Controller_Account extends Controller_Template {
 		{
 			try
 			{
-				$user->values(arr::extract($_POST['user'], array(
-						'username',
-						'email',
-						'password',
-						'first_name',
-						'last_name',
-						'gender',
-						'country',
-						'language',
-						'timezone',
-					)))->save();
+				// Create the user
+				$user->create_user($_POST['user'], array(
+					'username',
+					'email',
+					'password',
+					'first_name',
+					'last_name',
+					'gender',
+					'country',
+					'language',
+					'timezone',
+				));
+
+				$user->add('roles', ORM::factory('role', 'login')->find());
+
+				// Log the user in..
+				Auth::instance()->login($_POST['user']['username'], $_POST['user']['password']);
+
+				// Add a success notice and redirect.
+				Notices::add('success', 'Registration sucessful');
+
+				$this->_redirect('profile');
 			}
 			catch (ORM_Validation_Exception $e)
 			{
+				Notices::add('error', 'There was a problem with your registration!');
 				$this->template->body->errors = $e->errors('account/register');
 			}
 		}
 
 		$this->template->body->user = $user;
 	}
-	
+
 	public function action_login()
 	{
 		if ($this->request->method() == 'POST')
@@ -42,18 +54,7 @@ class Controller_Account extends Controller_Template {
 			{
 				Notices::add('success', 'Login sucessful');
 				
-				$return_url = Session::instance()->get_once('return_url', FALSE);
-
-				if ($return_url)
-				{
-					$this->request->redirect($return_url);
-				}
-				else
-				{
-					$this->request->redirect(Route::url('profile', array(
-						'username' => Auth::instance()->get_user()->username,
-					), $this->request->protocol()));
-				}
+				$this->_redirect('profile');
 			}
 			else
 			{
@@ -72,9 +73,7 @@ class Controller_Account extends Controller_Template {
 		
 		Notices::add('success', 'Logout sucessful');
 
-		$this->request->redirect(Route::url('account', array(
-			'action' => 'login',
-		), $this->request->protocol()));
+		$this->_redirect('login');
 	}
 
 	public function action_profile()
@@ -91,11 +90,55 @@ class Controller_Account extends Controller_Template {
 
 
 		$this->template->title = $user->username.'\'s Profile';
-		
-		$this->template->head = array();
-		$this->template->head[] = '<link rel="openid2.provider openid.server" href="'.Route::url('openid', NULL, $this->request->protocol()).'"/>';
-		$this->template->head[] = '<meta http-equiv="X-XRDS-Location" content="'.Route::url('openid', array('action' => 'userXrds', 'username' => $user->username), $this->request->protocol()).'" />';
-		
 		$this->template->body = View::factory('account/profile');
+		$this->template->body->errors = array();
+
+		if ($this->request->method() == 'POST')
+		{
+			try
+			{
+				$user->update_user($_POST['user'], array(
+					'email',
+					'password',
+					'first_name',
+					'last_name',
+					'gender',
+					'country',
+					'language',
+					'timezone',
+				));
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				$this->template->body->errors = $e->errors('account/register');
+			}
+		}
+
+		$this->template->body->user = $user;
+	}
+
+	protected function _redirect($to)
+	{
+		$return_url = Session::instance()->get_once('return_url', FALSE);
+
+		if ($return_url)
+		{
+			$this->request->redirect($return_url);
+		}
+		else
+		{
+			switch ($to)
+			{
+				case 'profile':
+				default:
+					$this->request->redirect(Route::url('profile', array(
+						'username' => Auth::instance()->get_user()->username,
+					), $this->request->protocol()));
+				case 'login':
+					$this->request->redirect(Route::url('account', array(
+						'action' => 'login',
+					), $this->request->protocol()));
+			}
+		}
 	}
 }

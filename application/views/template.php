@@ -50,13 +50,10 @@
 				<div id="menu">
 					<ul>
 						<? if ($user): ?>
-							<li class="logout first">
-								
+							<li class="profile first">
+								<a href="<?php echo Route::url('profile', array('username' => $user->username)) ?>"><?php echo __('Profile') ?></a>
 							</li>
-							<li class="changepw">
-								<a href="<?php echo Route::url('account', array('action' => 'profile', 'username' => $user->username)) ?>"><?php echo __('Profile') ?></a>
-							</li>
-							<li class="profile last">
+							<li class="logout last">
 								<a href="<?php echo Route::url('account', array('action' => 'logout')) ?>"><?php echo __('Logout') ?></a>
 							</li>
 						<? else: ?>
